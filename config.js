@@ -2,9 +2,10 @@ module.exports = {
   config: {
     connector: {
       // 3-32 characters
-      id: '6d9608fe4d9945abb92d45a48fc45ffc',
+      id: 'waldekblog',
       name: 'Waldek Mastykarz (blog)',
       description: 'Tips and best practices for building applications on Microsoft 365 by Waldek Mastykarz - Microsoft 365 Cloud Developer Advocate',
+      // https://learn.microsoft.com/graph/connecting-external-content-manage-schema
       schema: [
         {
           name: 'title',
@@ -22,6 +23,19 @@ module.exports = {
           isQueryable: 'true',
           isSearchable: 'true',
           isRetrievable: 'true'
+        },
+        {
+          name: 'imageUrl',
+          type: 'String',
+          isRetrievable: 'true'
+        },
+        {
+          name: 'url',
+          type: 'String',
+          isRetrievable: 'true',
+          labels: [
+            'url'
+          ]
         },
         {
           name: 'date',

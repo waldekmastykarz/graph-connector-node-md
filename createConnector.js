@@ -1,4 +1,5 @@
-const { config } = require('./config'),
+const
+  { config } = require('./config'),
   { client } = require('./graphClient'),
   { ResponseType } = require('@microsoft/microsoft-graph-client');
 
@@ -24,6 +25,8 @@ async function createSchema() {
   try {
     const res = await client
       .api(`/external/connections/${id}/schema`)
+      // need RAW response type to get the Location header
+      // which contains the URL to the schema creation status
       .responseType(ResponseType.RAW)
       .header('content-type', 'application/json')
       .post({
@@ -36,17 +39,15 @@ async function createSchema() {
       throw new Error(`Failed to create schema: ${res.statusText}. ${JSON.stringify(error, null, 2)}`);
     }
 
-    console.log('Creation request sent. Checking status...');
+    const body = await res.json();
 
-    do {
-      const statusRes = await client.api(res.headers.get('Location')).get();
-      console.log(statusRes);
-      console.log('Wait 3s...')
-      await new Promise(resolve => setTimeout(resolve, 3000));
+    const status = body.status;
+    if (status === 'completed') {
+      console.log('Schema created');
     }
-    while (statusRes.status === 'inprogress');
-
-    console.log('Schema created');
+    else {
+      console.error(`Schema creation failed: ${body.error.message}`);
+    }
   }
   catch (e) {
     console.error(e);
