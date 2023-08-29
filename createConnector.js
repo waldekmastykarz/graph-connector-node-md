@@ -25,28 +25,18 @@ async function createSchema() {
   try {
     const res = await client
       .api(`/external/connections/${id}/schema`)
-      // need RAW response type to get the Location header
-      // which contains the URL to the schema creation status
-      .responseType(ResponseType.RAW)
       .header('content-type', 'application/json')
       .post({
         baseType: 'microsoft.graph.externalItem',
         properties: schema
       });
 
-    if (!res.ok) {
-      const error = await res.json();
-      throw new Error(`Failed to create schema: ${res.statusText}. ${JSON.stringify(error, null, 2)}`);
-    }
-
-    const body = await res.json();
-
-    const status = body.status;
+    const status = res.status;
     if (status === 'completed') {
       console.log('Schema created');
     }
     else {
-      console.error(`Schema creation failed: ${body.error.message}`);
+      console.error(`Schema creation failed: ${res.error.message}`);
     }
   }
   catch (e) {
