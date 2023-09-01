@@ -37,6 +37,8 @@ function extract() {
 
 function transform(content) {
   return content.map(doc => {
+    // Date must be in the ISO 8601 format
+    const docDate = new Date(doc.data.date).toISOString();
     return {
       id: doc.data.slug,
       properties: {
@@ -44,8 +46,7 @@ function transform(content) {
         excerpt: doc.data.excerpt,
         imageUrl: doc.data.image,
         url: doc.url,
-        // Date must be in the ISO 8601 format
-        date: new Date(doc.data.date).toISOString(),
+        date: docDate,
         'tags@odata.type': 'Collection(String)',
         tags: doc.data.tags
       },
@@ -59,7 +60,16 @@ function transform(content) {
           type: 'everyone',
           value: 'everyone'
         }
-      ]
+      ],
+      activities: [{
+        '@odata.type': '#microsoft.graph.externalConnectors.externalActivity',
+        type: 'created',
+        startDateTime: docDate,
+        performedBy: {
+          type: 'user',
+          id: config.userId
+        }
+      }]
     }
   });
 }
@@ -73,21 +83,6 @@ async function load(content) {
         .api(`/external/connections/${id}/items/${doc.id}`)
         .header('content-type', 'application/json')
         .put(doc);
-
-      console.log('  Adding activities...');
-      await client
-        .api(`/external/connections/${id}/items/${doc.id}/addActivities`)
-        .header('content-type', 'application/json')
-        .post({
-          activities: [{
-            type: 'created',
-            startDateTime: doc.properties.date,
-            performedBy: {
-              type: 'user',
-              id: config.userId
-            }
-          }]
-        });
       console.log('  DONE');
     }
     catch (e) {
