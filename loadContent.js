@@ -9,7 +9,6 @@ import { config } from './config.js';
 import { client } from './graphClient.js';
 
 const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
-
 const contentDir = path.join(__dirname, 'content');
 const baseUrl = 'https://blog.mastykarz.nl';
 

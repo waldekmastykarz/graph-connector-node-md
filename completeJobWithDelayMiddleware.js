@@ -38,7 +38,6 @@ export function CompleteJobWithDelayMiddleware(delayMs) {
     if (body.status === 'inprogress') {
       console.debug(`Waiting ${delayMs}ms before trying again...`);
       await new Promise(resolve => setTimeout(resolve, delayMs));
-      context.request = context.request;
       await this.execute(context);
     }
   }
