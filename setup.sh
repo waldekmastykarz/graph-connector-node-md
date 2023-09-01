@@ -10,6 +10,6 @@ appInfo=$(npx -p @pnp/cli-microsoft365 -- m365 aad app add --name "Waldek Mastyk
 
 # write app to env.js
 echo "Writing app to env.js..."
-echo "module.exports = { appInfo: $appInfo };" > env.js
+echo "export const appInfo = $appInfo;" > env.js
 
 echo "DONE"

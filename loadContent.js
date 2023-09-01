@@ -1,13 +1,14 @@
 // todo get options from yargs
 
-const fs = require('fs'),
-  path = require('path'),
-  url = require('url'),
-  matter = require('gray-matter'),
-  removeMd = require('remove-markdown'),
-  argv = require('yargs').argv,
-  { client } = require('./graphClient'),
-  { config } = require('./config');
+import fs from 'fs';
+import matter from 'gray-matter';
+import path from 'path';
+import removeMd from 'remove-markdown';
+import url from 'url';
+import { config } from './config.js';
+import { client } from './graphClient.js';
+
+const __dirname = url.fileURLToPath(new URL('.', import.meta.url));
 
 const contentDir = path.join(__dirname, 'content');
 const baseUrl = 'https://blog.mastykarz.nl';

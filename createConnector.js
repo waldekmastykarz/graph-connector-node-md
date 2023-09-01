@@ -1,7 +1,5 @@
-const
-  { config } = require('./config'),
-  { client } = require('./graphClient'),
-  { ResponseType } = require('@microsoft/microsoft-graph-client');
+import { config } from './config.js';
+import { client } from './graphClient.js';
 
 async function createConnector() {
   console.log('Creating connector...');
@@ -45,8 +43,13 @@ async function createSchema() {
 }
 
 async function main() {
-  await createConnector();
-  await createSchema();
+  try {
+    await createConnector();
+    await createSchema();
+  }
+  catch (e) {
+    console.error(e);
+  }
 }
 
 main();
