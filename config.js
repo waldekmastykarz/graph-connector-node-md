@@ -1,9 +1,26 @@
 export const config = {
+  // waldek@dev tenant
+  userId: '9da37739-ad63-42aa-b0c2-06f7b43e3e9e',
   connector: {
     // 3-32 characters
     id: 'waldekblog',
     name: 'Waldek Mastykarz (blog)',
     description: 'Tips and best practices for building applications on Microsoft 365 by Waldek Mastykarz - Microsoft 365 Cloud Developer Advocate',
+    activitySettings: {
+      urlToItemResolvers: [
+        {
+          '@odata.type': '#microsoft.graph.externalConnectors.itemIdResolver',
+          urlMatchInfo: {
+            baseUrls: [
+              'https://blog.mastykarz.nl'
+            ],
+            urlPattern: '/(?<slug>[^/]+)'
+          },
+          itemId: '{slug}',
+          priority: 1
+        }
+      ]
+    },
     // https://learn.microsoft.com/graph/connecting-external-content-manage-schema
     schema: [
       {

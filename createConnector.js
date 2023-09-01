@@ -4,13 +4,14 @@ import { client } from './graphClient.js';
 async function createConnector() {
   console.log('Creating connector...');
 
-  const { id, name, description } = config.connector;
+  const { id, name, description, activitySettings } = config.connector;
   await client
     .api('/external/connections')
     .post({
       id,
       name,
-      description
+      description,
+      activitySettings
     });
 
   console.log('Connector created');

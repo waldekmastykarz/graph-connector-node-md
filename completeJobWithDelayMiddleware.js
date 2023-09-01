@@ -7,6 +7,12 @@ export function CompleteJobWithDelayMiddleware(delayMs) {
     const location = context.response.headers.get('location');
     if (location) {
       console.debug(`Location: ${location}`);
+
+      if (location.indexOf('/operations/') < 0) {
+        // not a job URL we should follow
+        return;
+      }
+
       console.log(`Waiting ${delayMs}ms before following location ${location}...`);
       await new Promise(resolve => setTimeout(resolve, delayMs));
 
@@ -17,7 +23,6 @@ export function CompleteJobWithDelayMiddleware(delayMs) {
       return;
     }
 
-    console.debug(`Request: ${context.request}`);
     if (context.request.indexOf('/operations/') < 0) {
       // not a job
       return;
@@ -33,7 +38,7 @@ export function CompleteJobWithDelayMiddleware(delayMs) {
     if (body.status === 'inprogress') {
       console.debug(`Waiting ${delayMs}ms before trying again...`);
       await new Promise(resolve => setTimeout(resolve, delayMs));
-      context.request = context.request + "-done";
+      context.request = context.request;
       await this.execute(context);
     }
   }

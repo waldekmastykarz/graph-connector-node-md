@@ -67,13 +67,28 @@ function transform(content) {
 async function load(content) {
   const { id } = config.connector;
   for (const doc of content) {
-    console.log(`Loading ${doc.id}...`);
     try {
+      console.log(`Loading ${doc.id}...`);
       await client
         .api(`/external/connections/${id}/items/${doc.id}`)
         .header('content-type', 'application/json')
         .put(doc);
-      console.log(`  DONE`);
+
+      console.log('  Adding activities...');
+      await client
+        .api(`/external/connections/${id}/items/${doc.id}/addActivities`)
+        .header('content-type', 'application/json')
+        .post({
+          activities: [{
+            type: 'created',
+            startDateTime: doc.properties.date,
+            performedBy: {
+              type: 'user',
+              id: config.userId
+            }
+          }]
+        });
+      console.log('  DONE');
     }
     catch (e) {
       console.error(`Failed to load ${doc.id}: ${e.message}`);
